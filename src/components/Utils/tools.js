@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import mancitylogo from "../../Resources/images/logos/manchester_city_logo.png";
+import { firebase } from "../../firebase";
 
 export const CityLogo = (props) => {
   const { link, linkTo, width, height } = props;
@@ -24,4 +26,24 @@ export const CityLogo = (props) => {
   } else {
     return template;
   }
+};
+
+export const showSuccessToast = (text) => {
+  toast.success(text, {
+    position: toast.POSITION.BOTTOM_RIGHT,
+  });
+};
+
+export const showErrorToast = (text) => {
+  toast.error(text, {
+    position: toast.POSITION.BOTTOM_RIGHT,
+  });
+};
+
+export const logoutHandler = () => {
+  firebase
+    .auth()
+    .signOut()
+    .then(() => showSuccessToast("Good bye!"))
+    .catch((error) => showErrorToast(error.message));
 };

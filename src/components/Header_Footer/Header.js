@@ -1,16 +1,17 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { AppBar, Toolbar, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import { CityLogo } from "../Utils/tools";
+import { logoutHandler } from "../Utils/tools";
 
-const Header = () => {
+const Header = (props) => {
   return (
     <AppBar
       position="fixed"
       style={{
         backgroundColor: "#98c5e9",
         boxShadow: "none",
-        paddin: "10px 0",
+        padding: "10px 0",
         borderBottom: "2px solid #00285e",
       }}
     >
@@ -28,9 +29,16 @@ const Header = () => {
           <Button color="inherit">Matches</Button>
         </Link>
 
-        <Link to="/dashboard">
-          <Button color="inherit">Dashboard</Button>
-        </Link>
+        {props.user ? (
+          <Fragment>
+            <Link to="/dashboard">
+              <Button color="inherit">Dashboard</Button>
+            </Link>
+            <Button color="inherit" onClick={logoutHandler}>
+              Log out
+            </Button>
+          </Fragment>
+        ) : null}
       </Toolbar>
     </AppBar>
   );

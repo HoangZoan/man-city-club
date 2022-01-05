@@ -1,5 +1,11 @@
+import Featured from "./Featured";
+
 const Home = () => {
-  return <div>Home</div>;
+  return (
+    <div className="bck_blue">
+      <Featured />
+    </div>
+  );
 };
 
 export default Home;
