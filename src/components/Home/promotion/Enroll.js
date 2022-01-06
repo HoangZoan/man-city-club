@@ -9,6 +9,24 @@ import { useState } from "react";
 const Enroll = () => {
   const [loading, setLoading] = useState(false);
 
+  const submitForm = async (values) => {
+    try {
+      const isOnTheList = await promotionsCollection
+        .where("email", "==", values.email)
+        .get();
+
+      if (isOnTheList.docs.length >= 1) {
+        showErrorToast("Sorry, this is mail is already registered!");
+        setLoading(false);
+        return false;
+      }
+
+      await promotionsCollection.add({ email: values.email });
+      setLoading(false);
+      showSuccessToast("Congratulation!");
+    } catch (error) {}
+  };
+
   const formik = useFormik({
     initialValues: { email: "" },
     validationSchema: Yup.object({
@@ -16,9 +34,10 @@ const Enroll = () => {
         .email("Email is invalid")
         .required("The email is required"),
     }),
-    onSubmit: (value) => {
+    onSubmit: (values) => {
       setLoading(true);
       // Submit value
+      submitForm(values);
     },
   });
 

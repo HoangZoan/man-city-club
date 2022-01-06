@@ -8,6 +8,8 @@ import Home from "./components/Home";
 import SignIn from "./components/SignIn";
 import Dashboard from "./components/Admin/Dashboard";
 import AuthGuard from "./components/HOC/Auth";
+import AdminPlayers from "./components/Admin/players";
+import AddEditPlayers from "./components/Admin/players/addEditPlayers";
 
 function Routes(props) {
   const { user } = props;
@@ -17,6 +19,15 @@ function Routes(props) {
       <Header user={user} />
 
       <Switch>
+        <Route
+          path="/admin_players/edit_player/:playerid"
+          component={AuthGuard(AddEditPlayers)}
+        />
+        <Route
+          path="/admin_players/add_player"
+          component={AuthGuard(AddEditPlayers)}
+        />
+        <Route path="/admin_players" component={AuthGuard(AdminPlayers)} />
         <Route path="/dashboard" component={AuthGuard(Dashboard)} />
         <Route
           path="/sign-in"
