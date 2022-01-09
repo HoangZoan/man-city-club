@@ -68,7 +68,7 @@ const AdminPlayers = () => {
           variant="outlined"
           disableElevation
           component={Link}
-          to="/admin_player/add_player"
+          to="/admin_players/add_player"
         >
           Add Player
         </Button>
@@ -76,23 +76,49 @@ const AdminPlayers = () => {
 
       <Table className="mb-5">
         <TableHead>
-          <TableCell>First name</TableCell>
-          <TableCell>Last name</TableCell>
-          <TableCell>Number</TableCell>
-          <TableCell>Position</TableCell>
+          <TableRow>
+            <TableCell>First name</TableCell>
+            <TableCell>Last name</TableCell>
+            <TableCell>Number</TableCell>
+            <TableCell>Position</TableCell>
+          </TableRow>
         </TableHead>
         <TableBody>
           {players
             ? players.map((player) => (
-                <TableRow
-                  key={player.id}
-                  component={Link}
-                  to={`/admin_player/edit_player/${player.id}`}
-                >
-                  <TableCell>{player.name}</TableCell>
-                  <TableCell>{player.lastname}</TableCell>
-                  <TableCell>{player.number}</TableCell>
-                  <TableCell>{player.position}</TableCell>
+                <TableRow key={player.id}>
+                  <TableCell>
+                    <Link
+                      className="table-row-link"
+                      to={`/admin_players/edit_player/${player.id}`}
+                    >
+                      {player.name}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      className="table-row-link"
+                      to={`/admin_players/edit_player/${player.id}`}
+                    >
+                      {player.lastname}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      className="table-row-link"
+                      to={`/admin_players/edit_player/${player.id}`}
+                    >
+                      {player.number}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      className="table-row-link"
+                      to={`/admin_players/edit_player/${player.id}`}
+                    >
+                      {player.position}
+                    </Link>
+                  </TableCell>
                 </TableRow>
               ))
             : null}

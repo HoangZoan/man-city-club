@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import mancitylogo from "../../Resources/images/logos/manchester_city_logo.png";
 import { firebase } from "../../firebase";
+import { FormHelperText } from "@mui/material";
 
 export const CityLogo = (props) => {
   const { link, linkTo, width, height } = props;
@@ -70,4 +71,25 @@ export const logoutHandler = () => {
     .signOut()
     .then(() => showSuccessToast("Good bye!"))
     .catch((error) => showErrorToast(error.message));
+};
+
+export const textErrorHelper = (formik, value) => {
+  const hasError = formik.errors[value] && formik.touched[value];
+
+  return {
+    error: hasError,
+    helperText: hasError && formik.errors[value],
+  };
+};
+
+export const selectErrorHelper = (formik, value) => {
+  const hasError = formik.errors[value] && formik.touched[value];
+
+  if (hasError) {
+    return <FormHelperText error>{formik.errors[value]}</FormHelperText>;
+  } else return null;
+};
+
+export const selectError = (formik, value) => {
+  return formik.errors[value] && formik.touched[value];
 };
