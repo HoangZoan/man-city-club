@@ -17,51 +17,127 @@ import {
 } from "@mui/material";
 import { firebase, playersCollection } from "../../../firebase";
 import { useEffect, useState } from "react";
+import Fileuploader from "../../Utils/fileUploader";
 
 const defaultValues = {
   name: "",
-  lastName: "",
+  lastname: "",
   number: "",
   position: "",
+  image: "",
 };
 
 const AddEditPlayers = (props) => {
   const [loading, setLoading] = useState(false);
   const [formType, setFormType] = useState("");
   const [values, setValues] = useState(defaultValues);
+  const [defaultImg, setDefaultImg] = useState("");
+
+  const submitForm = (values) => {
+    let dataToSubmit = values;
+    setLoading(true);
+
+    if (formType === "add") {
+      playersCollection
+        .add(dataToSubmit)
+        .then(() => {
+          showSuccessToast("Player added");
+          formik.resetForm();
+          props.history.push("/admin_players");
+        })
+        .catch((error) => {
+          showErrorToast(error);
+        })
+        .finally(() => setLoading(false));
+    } else {
+      playersCollection
+        .doc(props.match.params.playerid)
+        .update(dataToSubmit)
+        .then(() => {
+          showSuccessToast("Player updated");
+        })
+        .catch((error) => {
+          showErrorToast(error);
+        })
+        .finally(() => setLoading(false));
+    }
+  };
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: values,
     validationSchema: Yup.object({
       name: Yup.string().required("The input is required"),
-      lastName: Yup.string().required("The input is required"),
+      lastname: Yup.string().required("The input is required"),
       number: Yup.number()
         .required("The input is required")
-        .min("0", "Number must be bigger than 0")
-        .max("100", "The maximun valid number is 100"),
+        .min(0, "Number must be bigger than 0")
+        .max(100, "The maximun valid number is 100"),
       position: Yup.string().required("The input is required"),
+      image: Yup.string().required("The input is required"),
     }),
+    onSubmit: (values) => {
+      submitForm(values);
+    },
   });
 
   useEffect(() => {
     const params = props.match.params.playerid;
 
     if (params) {
-      setFormType("edit");
-      setValues(defaultValues);
+      playersCollection
+        .doc(params)
+        .get()
+        .then((snapshot) => {
+          if (snapshot.data()) {
+            firebase
+              .storage()
+              .ref("players")
+              .child(snapshot.data().image)
+              .getDownloadURL()
+              .then((url) => {
+                updateImageName(snapshot.data().image);
+                setDefaultImg(url);
+              });
+
+            setFormType("edit");
+            setValues(snapshot.data());
+          } else {
+            showErrorToast("Sorry, the player is not found");
+          }
+        });
     } else {
       setFormType("add");
       setValues(defaultValues);
     }
   }, [props.match.params.playerid]);
 
+  const updateImageName = (filename) => {
+    formik.setFieldValue("image", filename);
+  };
+
+  const resetImage = () => {
+    formik.setFieldValue("image", "");
+    setDefaultImg("");
+  };
+
   return (
     <AdminLayout title={formType === "add" ? "Add Player" : "Edit Player"}>
       <div className="editplayers_dialog_wrapper">
         <div>
           <form onSubmit={formik.handleSubmit}>
-            image
+            <FormControl>
+              <Fileuploader
+                dir="players"
+                defaultImgName={values.image}
+                defaultImg={defaultImg}
+                filename={(filename) => updateImageName(filename)}
+                resetImage={() => {
+                  resetImage();
+                }}
+              />
+              {selectErrorHelper(formik, "image")}
+            </FormControl>
             <hr />
             <h4>Player info</h4>
             <div className="mb-5">
@@ -79,12 +155,12 @@ const AddEditPlayers = (props) => {
             <div className="mb-5">
               <FormControl>
                 <TextField
-                  id="lastName"
-                  name="lastName"
+                  id="lastname"
+                  name="lastname"
                   variant="outlined"
                   placeholder="Add Last Name"
-                  {...formik.getFieldProps("lastName")}
-                  {...textErrorHelper(formik, "lastName")}
+                  {...formik.getFieldProps("lastname")}
+                  {...textErrorHelper(formik, "lastname")}
                 />
               </FormControl>
             </div>
@@ -93,6 +169,7 @@ const AddEditPlayers = (props) => {
                 <TextField
                   id="number"
                   name="number"
+                  type="number"
                   variant="outlined"
                   placeholder="Add Number"
                   {...formik.getFieldProps("number")}
@@ -109,13 +186,13 @@ const AddEditPlayers = (props) => {
                   {...formik.getFieldProps("position")}
                   displayEmpty
                 >
-                  <MenuItem value="" disabled sx={{ display: "none" }}>
+                  <MenuItem value="" disabled>
                     Choose a position
                   </MenuItem>
-                  <MenuItem value="keeper">Keeper</MenuItem>
-                  <MenuItem value="defence">Defence</MenuItem>
-                  <MenuItem value="midfield">Midfield</MenuItem>
-                  <MenuItem value="striker">Striker</MenuItem>
+                  <MenuItem value="Keeper">Keeper</MenuItem>
+                  <MenuItem value="Defence">Defence</MenuItem>
+                  <MenuItem value="Midfield">Midfield</MenuItem>
+                  <MenuItem value="Striker">Striker</MenuItem>
                 </Select>
                 {selectErrorHelper(formik, "position")}
               </FormControl>

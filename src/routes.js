@@ -10,6 +10,9 @@ import Dashboard from "./components/Admin/Dashboard";
 import AuthGuard from "./components/HOC/Auth";
 import AdminPlayers from "./components/Admin/players";
 import AddEditPlayers from "./components/Admin/players/addEditPlayers";
+import TheTeam from "./components/theTeam";
+import AdminMatches from "./components/Admin/matches";
+import AddEditMatches from "./components/Admin/matches/addEditMatch";
 
 function Routes(props) {
   const { user } = props;
@@ -19,6 +22,18 @@ function Routes(props) {
       <Header user={user} />
 
       <Switch>
+        {/* Admin - Matches section */}
+        <Route
+          path="/admin_matches/edit_match/:matchid"
+          component={AuthGuard(AddEditMatches)}
+        />
+        <Route
+          path="/admin_matches/add_match"
+          component={AuthGuard(AddEditMatches)}
+        />
+        <Route path="/admin_matches" component={AuthGuard(AdminMatches)} />
+
+        {/* Admin - Players section */}
         <Route
           path="/admin_players/edit_player/:playerid"
           component={AuthGuard(AddEditPlayers)}
@@ -28,7 +43,10 @@ function Routes(props) {
           component={AuthGuard(AddEditPlayers)}
         />
         <Route path="/admin_players" component={AuthGuard(AdminPlayers)} />
+
+        {/* Top Navigation */}
         <Route path="/dashboard" component={AuthGuard(Dashboard)} />
+        <Route path="/the_team" component={TheTeam} />
         <Route
           path="/sign-in"
           component={(props) => <SignIn {...props} user={user} />}

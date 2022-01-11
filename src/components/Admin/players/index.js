@@ -128,6 +128,12 @@ const AdminPlayers = () => {
       <Button variant="contained" disabled={loading} onClick={loadMorePlayers}>
         Load more
       </Button>
+
+      <div className="admin_progress">
+        {loading ? (
+          <CircularProgress thickness={7} style={{ color: "#98c5e9" }} />
+        ) : null}
+      </div>
     </AdminLayout>
   );
 };
