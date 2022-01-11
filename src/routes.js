@@ -13,6 +13,8 @@ import AddEditPlayers from "./components/Admin/players/addEditPlayers";
 import TheTeam from "./components/theTeam";
 import AdminMatches from "./components/Admin/matches";
 import AddEditMatches from "./components/Admin/matches/addEditMatch";
+import TheMatches from "./components/theMatches";
+import NotFound from "./components/not_found";
 
 function Routes(props) {
   const { user } = props;
@@ -47,11 +49,13 @@ function Routes(props) {
         {/* Top Navigation */}
         <Route path="/dashboard" component={AuthGuard(Dashboard)} />
         <Route path="/the_team" component={TheTeam} />
+        <Route path="/the_matches" component={TheMatches} />
         <Route
           path="/sign-in"
           component={(props) => <SignIn {...props} user={user} />}
         />
         <Route path="/" exact component={Home} />
+        <Route component={NotFound} />
       </Switch>
 
       <ToastContainer />

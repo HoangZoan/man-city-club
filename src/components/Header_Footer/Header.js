@@ -38,7 +38,11 @@ const Header = (props) => {
               Log out
             </Button>
           </Fragment>
-        ) : null}
+        ) : (
+          <Link to="/sign-in">
+            <Button color="inherit">Sign In</Button>
+          </Link>
+        )}
       </Toolbar>
     </AppBar>
   );

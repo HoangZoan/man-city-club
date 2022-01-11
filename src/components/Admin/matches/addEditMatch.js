@@ -65,9 +65,51 @@ const AddEditMatches = (props) => {
     }),
     onSubmit: (values) => {
       // submit form
-      console.log(values);
+      submitForm(values);
     },
   });
+
+  const submitForm = (values) => {
+    let dataToSubmit = values;
+
+    teams.forEach((team) => {
+      if (team.shortName === dataToSubmit.local) {
+        dataToSubmit["localThmb"] = team.thmb;
+      }
+      if (team.shortName === dataToSubmit.away) {
+        dataToSubmit["awayThmb"] = team.thmb;
+      }
+    });
+
+    setLoading(true);
+    if (formType === "add") {
+      matchesCollection
+        .add(dataToSubmit)
+        .then(() => {
+          showSuccessToast("Match added :)");
+          formik.resetForm();
+        })
+        .catch((error) => {
+          showErrorToast("Sorry, something went wrong", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      matchesCollection
+        .doc(props.match.params.matchid)
+        .update(dataToSubmit)
+        .then(() => {
+          showSuccessToast("Match updated");
+        })
+        .catch((error) => {
+          showErrorToast("Sorry, something went wrong", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  };
 
   const showTeams = () =>
     teams
